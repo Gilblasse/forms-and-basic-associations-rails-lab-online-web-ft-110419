@@ -7,19 +7,29 @@ class SongsController < ApplicationController
     @song = Song.find(params[:id])
   end
 
+
+
   def new
     @song = Song.new
+    @genres = Genre.all
+    
   end
 
   def create
     @song = Song.new(song_params)
+    note_content.each do |content|
+      @song.notes.build(content: content)
+    end
 
+ 
     if @song.save
       redirect_to @song
     else
       render :new
     end
   end
+
+  
 
   def edit
     @song = Song.find(params[:id])
@@ -37,6 +47,8 @@ class SongsController < ApplicationController
     end
   end
 
+
+
   def destroy
     @song = Song.find(params[:id])
     @song.destroy
@@ -44,10 +56,18 @@ class SongsController < ApplicationController
     redirect_to songs_path
   end
 
+
+
+
+
   private
 
   def song_params
-    params.require(:song).permit(:title)
+    params.require(:song).permit(:title,:artist_name,:genre_id)
+  end
+
+  def note_content
+    params.require(:song)[:notes]
   end
 end
 
